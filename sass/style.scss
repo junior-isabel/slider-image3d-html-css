@@ -1,0 +1,153 @@
+
+*, *::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+$gradient: initial;
+$img01: url('./images/011.jpg');
+$img02: url('./images/012.jpg');
+$img03: url('./images/016.webp');
+$img04: url('./images/013.jpg');
+$img05: url('./images/014.jpg');
+$lenW: 50;
+$lenH: 60;
+$width: 8px;
+$height: 8px;
+$W: #{$lenW * $width};
+$H: #{$lenH * $height};
+body {
+  background: #000;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 2000px;
+  perspective-origin: 50% 45%;
+  overflow: hidden;
+}
+
+.scene {
+  display: grid;
+  grid-template-columns: repeat($lenW, $width);
+  grid-template-rows: repeat($lenH, $height);
+  transform-style: preserve-3d;
+  position: relative;
+  animation: rotateScene 50s linear infinite alternate 20 + random($limit: 10) * 1s;
+  @keyframes rotateScene {
+   
+    to {
+      transform: rotateZ(180deg) rotateX(720deg);
+    }
+  }
+  .back, .right, .left {
+    position: absolute;
+    width: 75vw;
+    height: 75vh;
+    margin: auto auto;
+    z-index: -1;
+    background-image: radial-gradient(ellipse at center, #fff5, 5%, transparent, transparent);
+
+  }
+  .back {
+    transform: translate3d(-25%, 0, -1200px) scaleZ(2);
+
+  }
+  .right {
+    transform: rotateY(90deg) translate3d(-25%, 0, 250px) scaleZ(2);
+
+  }
+
+  .left {
+    transform: rotateY(270deg) translate3d(-25%, 0, 850px);
+
+  }
+}
+.image::before {
+  background-image: $img03,
+  $img01, $img02;
+}
+.scene .image {
+  width: $width;
+  height: $height;
+  position: relative;
+  transform-style: preserve-3d;
+  background-repeat: no-repeat;
+  background-image: $img01;
+  background-size: $W $H;
+  opacity: 0;
+}
+
+@for $i from 0 to $lenH {
+  @for $j from 0 to $lenW {
+    $num: #{($i * $lenW) + $j + 1} ;
+    .image:nth-child(#{$num}) {
+      $x: #{-$width * $j};
+      $y: #{-$height * $i};
+      $delay:random($limit: 2000) *  1ms;
+      $incrementalDelay: (($i * $lenW) + $j + 1) * 5 + $delay;
+      @debug $incrementalDelay;
+     animation:
+      motion#{$num} 10s ease-out infinite reverse $delay,
+      backgroundImage 50s ease-in infinite
+     ;
+      transform: 
+      
+     translate3d(
+       -1000px + random() * 2000px, 
+       -1000px + random() * 2000px, 
+       -500px + random() * 1000px
+     )
+      rotate3d(
+        random($limit: 3), 
+        random($limit: 3), 
+        random($limit: 3), 
+        0rad
+      );
+      background-position-x: $x;
+      background-position-y: $y;
+    }
+     @keyframes motion#{$num} {
+       0% {
+         opacity: 0.2;
+       }
+      15% {
+        opacity: 1;
+      }
+      20%, 70% {
+        opacity: 1;
+        transform: 
+          translate3d(0, 0, 0)
+          rotate3d(
+            random($limit: 2), 
+            random($limit: 3), 
+            random($limit: 2), 0rad
+          );
+        
+       }
+       80%, 100% {
+         opacity: 0;
+       }
+     }
+  }
+  }
+  @keyframes backgroundImage {
+    0%, 20% {
+ 
+      background-image: $img01;
+    }
+     23%, 40% {
+       background-image: $img02;
+     }
+     42.5%, 60% {
+       background-image: $img03;
+     }
+     62.5%, 80% {
+      background-image: $img04;
+    }
+    82.5%, 100% {
+      background-image: $img05;
+    }
+  }
+
+
